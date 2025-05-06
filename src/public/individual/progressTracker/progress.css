@@ -1,0 +1,414 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Main Layout */
+.container {
+    padding: 2rem;
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #000000, #363636);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+    color: rgb(122, 236, 225);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    text-transform: uppercase;
+    font-size: 1.8rem;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    transform: translateY(0.5rem);
+}
+
+.navbar li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    transition: color 0.7s ease, transform 0.7s ease;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.navbar li a:hover {
+    color: rgb(2, 209, 189);
+    transform: scale(1.3);
+    transition: 0.7s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Main Heading */
+.main-heading {
+    font-family: 'Lora', serif;
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+/* Graph Containers */
+.graphs {
+    display: flex;
+    gap: 20px;
+}
+
+.graph-container {
+    width: 48%;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.graph-container:hover {
+    transform: scale(1.02);
+}
+
+.graph-container h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+/* Data Section Styling */
+.data-section {
+    margin-top: 40px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.data-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+select, input[type="date"], input[type="number"], button {
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+button {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #115293;
+}
+
+.table {
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+.table th, .table td {
+    padding: 10px;
+    text-align: center;
+}
+
+.table thead {
+    background-color: #f5f5f5;
+}
+
+.table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Card Styling */
+.card {
+    background-color: #f4f6f9;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-heading {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    color: #333;
+    font-weight: 500;
+}
+
+.form-control {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+#progressTrackerForm button {
+    background-color: #1976d2;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    width: 100%;
+    font-weight: bold;
+}
+
+#progressTrackerForm button:hover {
+    background-color: #115293;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .graphs {
+        flex-direction: column;
+    }
+
+    .graph-container {
+        width: 100%;
+    }
+}
+
+/* Locked Progress Tracker Styling */
+.locked {
+    background-color: #f8d7da; /* Light red background */
+    opacity: 0.6; /* Slight transparency to indicate it is locked */
+    color: #721c24; /* Dark red text color */
+    border-left: 5px solid #721c24; /* Left border to highlight locked state */
+}
+
+.locked .btn {
+    background-color: #d6d6d6; 
+    border-color: #cccccc; 
+}
+
+
+.locked .status-badge {
+    background-color: #721c24; 
+    color: white;
+    padding: 0.3em 0.5em;
+    font-size: 0.9rem;
+    border-radius: 0.3em;
+    text-transform: uppercase;
+}
+
+
+.table tbody tr.locked {
+    background-color: #f8d7da; 
+    color: #721c24;
+}
+
+.table tbody tr.locked:hover {
+    background-color: #f8c1c1; 
+    cursor: not-allowed;
+}
+
+
+.table tbody tr.locked td {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+.table .locked .forecast-status {
+    color: #721c24; 
+}
+
+/* Ensure the table doesn't extend out of the container */
+.table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS devices */
+    margin-top: 20px;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    table-layout: fixed; /* Prevent table from expanding beyond its container */
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    word-wrap: break-word; /* Handle long text within cells */
+}
+
+/* Add a responsive design for the table */
+@media (max-width: 768px) {
+    /* Allow horizontal scrolling for the table on small screens */
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        table-layout: auto; /* Adjust column width dynamically */
+    }
+
+    th, td {
+        font-size: 0.9rem; /* Adjust font size for better readability on small screens */
+    }
+
+    /* Adjust button size for mobile */
+    .btn {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+}
+
+
+/* Modal Overlay */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* Modal Content Box */
+  .modal-overlay {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  /* Modal Title */
+  .modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  /* Button Container */
+  .modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  /* Button Styles */
+  .btn {
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-danger {
+    background-color: #d9534f;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background-color: #c9302c;
+  }
+  
+  .btn-secondary {
+    background-color: #f7f7f7;
+    color: #555;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #e6e6e6;
+  }
+  
+  /* Animation for modal appearance */
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .inner-navigation {
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    font-size: 1.2rem;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.nav-link i {
+    margin-right: 8px;
+}
+
+.nav-link:hover {
+    color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+    border-radius: 5px;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+}
+
+.nav-link.text-dark {
+    color: #495057;
+}
+
+.nav-link.text-dark:hover {
+    background-color: rgba(73, 80, 87, 0.1);
+}
+
+.nav-item:not(:last-child) {
+    margin-right: 20px;
+}
+
+.nav-item:last-child {
+    margin-left: 20px;
+}

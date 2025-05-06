@@ -1,0 +1,526 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// model TaskTracking {
+//   id                 Int             @id @default(autoincrement())
+//   progressTrackerId  Int
+//   title              String
+//   isCompleted        Boolean         @default(false)
+//   status            TaskStatus       @default(PENDING)
+//   isClosed           Boolean         @default(false)
+//   createdAt          DateTime        @default(now())
+//   updatedAt          DateTime        @updatedAt()
+//   completedAt        DateTime?
+//   completionDuration Int?
+//   ProgressTracker    ProgressTracker @relation("TrackerTasks", fields: [progressTrackerId], references: [id], onDelete: Cascade)
+
+//   //self refrential so that tasks have order
+//   dependsOn          Int?           
+//   dependentTasks     TaskTracking[]  @relation("TaskDependencies")
+//   parentTask         TaskTracking?   @relation("TaskDependencies", fields: [dependsOn], references: [id])
+// }
+
+
+model Status {
+  id   Int    @id @default(autoincrement())
+  text String @unique
+
+  tasks Task[]
+}
+
+model Person {
+  id     Int              @id @default(autoincrement())
+  email  String           @unique
+  name   String
+  avatar String?
+  tasks  TaskAssignment[]
+}
+
+model TaskAssignment {
+  taskId     Int
+  personId   Int
+  person     Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  assignedAt DateTime @default(now())
+
+  @@id(name: "assignmentId", [taskId, personId])
+   task       Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+
+
+
+enum TaskStatus {
+  INCOMPLETE
+  STARTED
+  COMPLETED
+  LOCKED
+}
+
+model TaskTracking {
+  id                 Int             @id @default(autoincrement())
+  progressTrackerId  Int
+  title              String
+  isCompleted        Boolean         @default(false)
+  status             TaskStatus      @default(INCOMPLETE)
+  isClosed           Boolean         @default(false)
+  createdAt          DateTime        @default(now())
+  startedAt          DateTime?        
+  updatedAt          DateTime        @updatedAt()
+  completedAt        DateTime?
+  completionDuration Float?
+  estimatedDuration  Float           
+  scheduleStatus     String?       
+  HistoricalData     HistoricalData[]
+  ProgressTracker    ProgressTracker @relation("TrackerTasks", fields: [progressTrackerId], references: [id], onDelete: Cascade)
+  
+  // Task dependencies
+  dependsOn          Int?
+  dependentTasks     TaskTracking[]  @relation("TaskDependencies")
+  parentTask         TaskTracking?   @relation("TaskDependencies", fields: [dependsOn], references: [id])
+}
+
+
+enum FreezeStatus {
+  ACTIVE
+  EXPIRED
+}
+
+
+model FreezePowerUp {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  freezeUntil DateTime  
+  createdAt  DateTime  @default(now())
+  status    FreezeStatus   @default(ACTIVE)  
+
+  user       User      @relation(fields: [userId], references: [id])
+}
+
+
+
+enum PartnerStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+
+model AccountabilityPartner {
+  id              Int           @id @default(autoincrement())
+  userId          Int
+  partnerId       Int
+  status          PartnerStatus @default(PENDING)
+  createdAt       DateTime      @default(now())
+  partnerStreak   Int           @default(0)
+  updatedAt       DateTime?      
+
+
+  user            User          @relation("UserPartners", fields: [userId], references: [id])
+  partner         User          @relation("PartnerPartners", fields: [partnerId], references: [id])
+
+  
+  @@unique([userId, partnerId])
+}
+
+
+enum StreakStatus {
+  ACTIVE    
+  FROZEN    
+  BROKEN  
+  INACTIVE   
+}
+
+
+model Streak {
+  id             Int       @id @default(autoincrement())
+  userId         Int       @unique
+  currentStreak  Int       @default(0)
+  longestStreak  Int       @default(0)
+  freezeCount    Int       @default(0)
+  lastAddedFreeze DateTime?
+  lastCompletion DateTime? 
+  status         StreakStatus  @default(INACTIVE)  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime?
+  
+
+  user           User      @relation(fields: [userId], references: [id])
+}
+
+
+
+model StreakNotification {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  senderId    Int?
+  message     String
+  type        String   
+  isRead      Boolean  @default(false) 
+  status      String? 
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+
+
+model User {
+  id                        Int                      @id @default(autoincrement())
+  email                     String                   @unique
+  name                      String
+  password                  String
+  avatar                    String?
+  bio                       String?
+  created_at                DateTime                 @default(now())  
+  updated_at                DateTime                 @updatedAt()
+  status                    String?                  @default("not active")
+
+  productive                String?                  @default("no productive")
+
+
+  ProgressTracker           ProgressTracker[]        // Related Progress Trackers
+  studyGroups               StudyGroup[]             @relation("UserStudyGroups")
+  groupMembers              GroupMember[] 
+  studyGroupMessages        StudyGroupMessage[] 
+  assignments               Submission[] 
+  resources                 Resource[] 
+  posts                     Post[] 
+  votes                     Vote[] 
+  userActivity              UserActivity[] 
+  quiz                      Quiz[] 
+  Comment                   Comment[] 
+  HistoricalData            HistoricalData[] 
+  Streak                    Streak?                  
+  AccountabilityPartners    AccountabilityPartner[]   @relation("UserPartners")  
+  FreezePowerUp             FreezePowerUp[]          
+  PartnerPartners           AccountabilityPartner[]   @relation("PartnerPartners")
+  notifications Notification[]
+  StreakNotification        StreakNotification[]
+}
+
+enum ProgressStatus {
+  COMPLETED
+  ONGOING
+  NOT_BEGUN
+  OVERDUE
+  PENDING
+}
+
+model ProgressTracker {
+  id                     Int               @id @default(autoincrement())
+  userId                 Int
+  title                  String
+  startDate              DateTime
+  deadline               DateTime
+  notes                  String?
+  progressPercentage     Int?
+  expectedCompletionDate DateTime?         
+  forecastStatus         String?          
+  status                 ProgressStatus    @default(NOT_BEGUN)
+  isClosed               Boolean           @default(false)
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt()
+
+  User                   User              @relation(fields: [userId], references: [id])
+  Task                   TaskTracking[]    @relation("TrackerTasks")
+  HistoricalData         HistoricalData[]  
+}
+
+model HistoricalData {
+  id                 Int             @id @default(autoincrement())
+  userId             Int
+  taskTrackingId     Int
+  progressTrackerId  Int
+  taskDuration       Int             
+  scheduleStatus     String         
+  completionDate     DateTime       
+  startedAt          DateTime        @default(now())
+
+  User               User            @relation(fields: [userId], references: [id])
+  ProgressTracker    ProgressTracker @relation(fields: [progressTrackerId], references: [id])
+  TaskTracking       TaskTracking    @relation(fields: [taskTrackingId], references: [id],onDelete: Cascade)
+} 
+
+
+model StudyGroup {
+  groupId    Int      @id @default(autoincrement())
+  groupName  String
+  inviteCode String   @unique
+  groupDesc  String?
+  module     String
+  createdBy  Int
+  createdAt  DateTime @default(now())
+
+  creator   User          @relation("UserStudyGroups", fields: [createdBy], references: [id])
+  members   GroupMember[]
+  polls     Poll[]
+  messages  StudyGroupMessage[]
+  assignments Assignment[]
+}
+
+model GroupMember {
+  membershipId Int      @id @default(autoincrement())
+  groupId      Int
+  userId       Int
+  role         String
+  joinedAt     DateTime @default(now())
+
+  group     StudyGroup @relation(fields: [groupId], references: [groupId])
+  member    User       @relation(fields: [userId], references: [id])
+  polls     Poll[]
+  pollVotes PollVote[]
+  assignments Assignment[]
+
+  @@unique([userId, groupId])
+}
+
+enum PollStatus {
+  ACTIVE
+  PAUSED
+  CLOSED
+  ARCHIVED
+}
+
+model Poll {
+  pollId      Int          @id @default(autoincrement())
+  groupId     Int          
+  createdBy   Int          
+  title       String       
+  description String?      
+  status      PollStatus   @default(ACTIVE)
+  createdAt   DateTime     @default(now())
+  pollCloseTime DateTime
+  updatedAt   DateTime     @updatedAt()
+  closedAt    DateTime?    
+  closingCondition String? 
+
+  group   StudyGroup   @relation(fields: [groupId], references: [groupId])
+  creator GroupMember  @relation(fields: [createdBy], references: [membershipId])
+  options PollOption[]
+  votes   PollVote[]
+}
+
+model PollOption {
+  optionId Int    @id @default(autoincrement())
+  pollId   Int
+  text     String
+
+  poll  Poll       @relation(fields: [pollId], references: [pollId])
+  votes PollVote[]
+}
+
+model PollVote {
+  voteId        Int      @id @default(autoincrement())
+  pollId        Int
+  optionId      Int
+  groupMemberId Int
+  votedAt       DateTime @default(now())
+
+  poll       Poll        @relation(fields: [pollId], references: [pollId])
+  pollOption PollOption  @relation(fields: [optionId], references: [optionId])
+  voter      GroupMember @relation(fields: [groupMemberId], references: [membershipId])
+
+  @@unique([pollId, groupMemberId])
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  SEEN
+}
+
+model StudyGroupMessage {
+  messageId   Int           @id @default(autoincrement())
+  groupId     Int
+  userId      Int
+  content     String
+  sentAt      DateTime      @default(now())
+  status      MessageStatus @default(SENT)
+
+  group   StudyGroup @relation(fields: [groupId], references: [groupId])
+  sender  User       @relation(fields: [userId], references: [id])
+}
+
+enum AssignmentStatus {
+  UPCOMING
+  DUE
+  OVERDUE
+  CLOSED
+  ARCHIVED
+}
+
+model Assignment {
+  id          Int               @id @default(autoincrement())
+  groupId     Int
+  createdBy   Int
+  title       String
+  description String?
+  dueDate     DateTime
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt()
+  status      AssignmentStatus  @default(UPCOMING)
+
+  group   StudyGroup @relation(fields: [groupId], references: [groupId])
+  creator GroupMember @relation(fields: [createdBy], references: [membershipId])
+  submissions Submission[]
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  LATE
+}
+
+model Submission {
+  id          Int       @id @default(autoincrement())
+  assignmentId Int
+  userId      Int
+  fileSubmitted     String
+  submittedAt DateTime  @default(now())
+  status      SubmissionStatus @default(SUBMITTED)
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id])
+  submitter  User       @relation(fields: [userId], references: [id])
+}
+
+model Resource {
+  id         Int      @id @default(autoincrement())
+  name       String
+  fileType   String
+  url        String
+  uploadedBy Int
+  pinned     Boolean  @default(false) // New field for pinned resources
+  views      Int      @default(0)
+  downloads  Int      @default(0)
+  uploadedAt DateTime @default(now())
+  User       User     @relation(fields: [uploadedBy], references: [id])
+}
+
+
+
+model Forum {
+  forumId       Int      @id @default(autoincrement())
+  forumName     String
+  forumTopic    String
+  posts         Post[]
+  status        String   @default("open")
+  inactiveStart DateTime? // Nullable field to store when the forum becomes inactive
+  createdAt     DateTime  @default(now()) // Still keeping track of creation time
+  inactiveDays  Int       @default(0)
+}
+
+model Post {
+  postId    Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  forumId   Int
+  authorId  Int
+  forum     Forum    @relation(fields: [forumId], references: [forumId])
+  author    User     @relation(fields: [authorId], references: [id])
+  votes     Vote[]
+  Comment Comment[]
+  notifications Notification[]
+}
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  userId    Int
+  value     Int // 1 for upvote, -1 for downvote
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+
+model UserActivity {
+  id Int @id @default(autoincrement())
+  userId Int
+  login_timestamp DateTime
+  user User @relation(fields:[userId],references: [id])
+}
+
+
+model Task {
+  id       Int              @id @default(autoincrement())
+  name     String
+  statusId Int
+  status   Status           @relation(fields: [statusId], references: [id])
+  persons  TaskAssignment[]
+}
+
+
+model Quiz {
+  id Int @id @default(autoincrement())
+  userId Int     
+  title String
+  user User @relation(fields:[userId],references: [id])
+  popular String? @default("no popular")
+  
+  quizquestion QuizQuestion []
+  quizpopular  QuizPopular   []
+}
+
+
+model QuizQuestion {
+  id Int @id @default(autoincrement())
+  quizId Int
+  description String
+  correctOption String
+
+  quiz Quiz @relation(fields:[quizId],references: [id])
+}
+
+
+model QuizPopular {
+  id Int @id @default(autoincrement())
+  quizId Int
+  dateTime DateTime
+
+  quiz Quiz @relation(fields: [quizId],references: [id])
+}
+
+
+
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  postId    Int
+  userId    Int
+  content   String
+  parentId  Int?      // Nullable for root comments
+  createdAt DateTime  @default(now())
+
+  post      Post      @relation(fields: [postId], references: [postId])
+  user      User      @relation(fields: [userId], references: [id])
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+
+  @@index([postId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    Int
+  postId    Int      // Changed this to Int to match Post's primary key type
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  post      Post     @relation(fields: [postId], references: [postId])
+
+  user      User     @relation(fields: [userId], references:[id])
+}

@@ -1,0 +1,248 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Distributes space evenly */
+    align-items: center; /* Vertically centers logo and icons */
+    background: linear-gradient(to right, #000000, #363636);
+    padding: 1rem 2rem;
+}
+
+.logo {
+    color: rgb(122, 236, 225);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    margin-left: 5rem; /* Remove or adjust as needed */
+}
+
+
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    transform: translateY(0.5rem);
+    margin-right: 5rem;
+
+}
+
+.navbar li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    transition: color 0.7s ease, transform 0.7s ease;
+    border-radius: 8px;
+}
+
+.navbar li a:hover {
+    color: rgb(2, 209, 189);
+    transform: scale(1.3);
+    transition: 0.7s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Add shadow */
+}
+
+.navbar li:hover ~ li a {
+    transform: translateX(20px); /* Move other icons to the right */
+}
+
+
+.navbar li a:not(:hover) {
+    transition: transform 0.7s ease;
+}
+
+.navbar i {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+/* Hero Section */
+.hero-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f7f7f7, #d0d0d0);
+    color: #333;
+}
+
+.hero-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.cta-button {
+    padding: 1rem 2rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.cta-button:hover {
+    background-color: #0056b3;
+}
+
+/* Features Section */
+.features-section {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 4rem 2rem;
+    background: #e6e6e6;
+}
+
+.feature-box {
+    text-align: center;
+    max-width: 250px;
+}
+
+.feature-box i {
+    font-size: 3rem;
+    color: #007bff;
+    margin-bottom: 1rem;
+}
+
+.feature-box h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.feature-box p {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* About Section */
+.about-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #f0f0f0;
+}
+
+.about-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.about-section p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+.learn-more-button {
+    padding: 1rem 2rem;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.learn-more-button:hover {
+    background-color: #218838;
+}
+
+
+body {
+    background: f1fbff;
+}
+
+.section-padding{
+    padding: 100px 0;
+}
+
+.carousel-item{
+    height: 90vh;
+    min-height: 300px;
+}
+
+.carousel-caption{
+    bottom: 220px;
+    z-index: 2;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-30%);
+}
+
+.carousel-caption h5{
+    font-size: 45px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 25px;
+}
+
+.carousel-caption p{
+    width: 60%;
+    margin: auto;
+    font-size: 23px;
+    line-height: 1.9;
+}
+
+.carousel-inner::before{
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0%;
+    left: 0%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.w-100{
+    height: 100vh;
+}
+
+.about .card-body i{
+    font-size: 50px;
+}
+
+/* responsive css*/
+@media only screen and (min-width:768px) and (max-width:991px){
+    .carousel-caption{
+        bottom: 370px;
+    }
+    .carousel-caption p{
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width:767px){
+    .navbar-nav{
+        text-align: center;
+    }
+    .carousel-caption{
+        bottom: 125px;           
+    }
+    .carousel-caption h5{
+        font-size: 17px;
+    }
+    .carousel-caption a{
+        padding: 10px 15px; 
+    }
+    .carousel-caption p{
+        width: 100%;
+        line-height: 1.6;
+        font-size: 12px;    
+    }   
+
+}

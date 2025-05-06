@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources Page</title>
+  <link rel="stylesheet" href="./resources.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,700|Montserrat:300" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">LearnLoop</div>
+    <ul id="navbar">
+      <li><a href="../index.html"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="../group/group.html"><i class="fas fa-users"></i> Groups</a></li>
+      <li><a href="../individual/indi.html"><i class="fas fa-calendar-alt"></i> Individual</a></li>
+      <li><a href="./resources.html"><i class="fas fa-book"></i> Resources</a></li>
+      <li><a href="../forum/forumMain.html"><i class="fas fa-podcast"></i> Forum</a></li>
+      <li><a href="../profile/profile.html"><i class="fas fa-user"></i> Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- Search and Filter Section -->
+  <div class="container mt-4">
+    <div class="d-flex justify-content-center mb-4">
+      <input type="text" class="form-control w-50 me-2" id="searchInput" placeholder="Search by file name">
+      <select class="form-select w-25" id="fileTypeFilter">
+        <option value="">All Types</option>
+        <option value="mp4">Videos</option>
+        <option value="pdf">PDF</option>
+        <option value="docx">Documents</option>
+      </select>
+      <button class="btn btn-primary ms-2" onclick="fetchResources()">Search</button>
+    </div>
+
+    <!-- Sort Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4>Sort By:</h4>
+      <select id="sortBy" class="form-select w-50" onchange="fetchResources()">
+        <option value="">Default</option>
+        <option value="most-downloads">Most Downloads</option>
+        <option value="least-downloads">Least Downloads</option>
+        <option value="a-z">A-Z</option>
+        <option value="most-views">Most Views (Videos)</option>
+      </select>
+    </div>
+
+    <!-- Bulk Download Button -->
+    <div class="d-flex justify-content-end mb-4">
+      <button class="btn btn-success" onclick="downloadSelectedResources()">Download Selected</button>
+    </div>
+
+
+    <!-- Trending Resources Section -->
+    <div class="container mt-4">
+      <h4>🔥 Trending Resources</h4>
+      <div id="trendingResourcesList" class="row"></div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" id="resourceTabs" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos" type="button"
+          role="tab" aria-controls="videos" aria-selected="true">Videos</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="documents-tab" data-bs-toggle="tab" data-bs-target="#documents" type="button"
+          role="tab" aria-controls="documents" aria-selected="false">Documents</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="pinned-tab" data-bs-toggle="tab" data-bs-target="#pinned" type="button" role="tab"
+          aria-controls="pinned" aria-selected="false">Pinned</button>
+      </li>
+    </ul>
+
+    <!-- Tab Contents -->
+    <div class="tab-content" id="resourceTabsContent">
+      <div class="tab-pane fade show active" id="videos" role="tabpanel" aria-labelledby="videos-tab">
+        <div id="videoList" class="row"></div>
+      </div>
+      <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+        <div id="documentList" class="row"></div>
+      </div>
+      <div class="tab-pane fade" id="pinned" role="tabpanel" aria-labelledby="pinned-tab">
+        <div id="pinnedList" class="row"></div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="resourceModal" tabindex="-1" aria-labelledby="resourceModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="resourceModalLabel"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="resourceModalBody">
+            <!-- Content will be dynamically populated -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+      async function fetchResources() {
+        const search = document.getElementById('searchInput').value.trim();
+        const fileType = document.getElementById('fileTypeFilter').value;
+        const sortBy = document.getElementById('sortBy').value;
+
+        const queryParams = new URLSearchParams({ search, fileType, sortBy });
+
+        try {
+          const response = await fetch(`/resources?${queryParams}`);
+          if (!response.ok) throw new Error('Failed to fetch resources');
+
+          const resources = await response.json();
+          const videoList = document.getElementById('videoList');
+          const documentList = document.getElementById('documentList');
+          const pinnedList = document.getElementById('pinnedList');
+
+          videoList.innerHTML = '';
+          documentList.innerHTML = '';
+          pinnedList.innerHTML = '';
+
+          resources.forEach((resource) => {
+            const isVideo = resource.fileType === 'mp4';
+            const card = `
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <input type="checkbox" class="resource-checkbox" value="${resource.id}" style="margin: 5px;">
+        ${isVideo ? `
+          <video controls class="card-img-top" onplay="incrementViews(${resource.id})">
+            <source src="${resource.url}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        ` : `<img src="/icons/pdf-icon.png" class="card-img-top" alt="${resource.name}">`}
+        <div class="card-body">
+          <h5 class="card-title">${resource.name}</h5>
+          <p class="card-text"><strong>Type:</strong> ${resource.fileType}</p>
+          <p class="card-text"><strong>${isVideo ? 'Views' : 'Downloads'}:</strong> ${isVideo ? resource.views : resource.downloads}</p>
+          ${!isVideo ? `<a href="/resources/downloads/${resource.url.split('/').pop()}" class="btn btn-success mt-2">Download</a>` : ''}
+          <button class="btn btn-primary mt-2" onclick="showResourceDetails(${JSON.stringify(resource).replace(/"/g, '&quot;')})">View Details</button>
+          <button class="btn btn-${resource.pinned ? 'danger' : 'success'} mt-2" onclick="togglePin(${resource.id}, ${resource.pinned})">
+            ${resource.pinned ? 'Unpin' : 'Pin'}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+            if (resource.pinned) {
+              pinnedList.innerHTML += card;
+            } else if (isVideo) {
+              videoList.innerHTML += card;
+            } else {
+              documentList.innerHTML += card;
+            }
+          });
+        } catch (err) {
+          console.error('Error fetching resources:', err);
+        }
+      }
+
+      async function downloadSelectedResources() {
+        const selectedResources = Array.from(document.querySelectorAll('.resource-checkbox:checked')).map(
+          (checkbox) => checkbox.value
+        );
+
+        if (selectedResources.length === 0) {
+          alert('Please select at least one resource to download.');
+          return;
+        }
+
+        try {
+          const response = await fetch('/resources/bulk-download', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ resourceIds: selectedResources }),
+          });
+
+          if (!response.ok) throw new Error('Failed to download resources');
+
+          // Trigger the download
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'resources.zip';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } catch (error) {
+          console.error('Error downloading resources:', error);
+        }
+      }
+
+      async function togglePin(resourceId, currentlyPinned) {
+        try {
+          const endpoint = `/resources/${currentlyPinned ? 'unpin' : 'pin'}/${resourceId}`;
+          await fetch(endpoint, { method: 'PUT' });
+          fetchResources();
+        } catch (error) {
+          console.error('Error toggling pin:', error);
+        }
+      }
+
+      function showResourceDetails(resource) {
+        const modalTitle = document.getElementById('resourceModalLabel');
+        const modalBody = document.getElementById('resourceModalBody');
+
+        modalTitle.textContent = resource.name;
+        modalBody.innerHTML = `
+    <p><strong>Type:</strong> ${resource.fileType}</p>
+    <p><strong>Uploaded By:</strong> ${resource.User?.name || 'Unknown'}</p>
+    ${resource.fileType === 'mp4' ? `<p><strong>Views:</strong> ${resource.views}</p>` : `<p><strong>Downloads:</strong> ${resource.downloads}</p>`}
+    <a href="/resources/downloads/${resource.url.split('/').pop()}" class="btn btn-success mt-2">Download</a>
+  `;
+
+        const modal = new bootstrap.Modal(document.getElementById('resourceModal'));
+        modal.show();
+      }
+
+      function incrementViews(resourceId) {
+        fetch(`/resources/views/${resourceId}`, { method: 'PUT' }).catch(error => {
+          console.error('Error incrementing views:', error);
+        });
+      }
+
+      async function fetchTrendingResources() {
+        try {
+          const response = await fetch('/resources/trending?limit=5'); // Fetch top 5 trending resources
+          if (!response.ok) throw new Error('Failed to fetch trending resources');
+
+          const resources = await response.json();
+          const trendingList = document.getElementById('trendingResourcesList');
+          trendingList.innerHTML = '';
+
+          resources.forEach(resource => {
+            const isVideo = resource.fileType === 'mp4';
+            const card = `
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            ${isVideo ? `
+              <video controls class="card-img-top">
+                <source src="${resource.url}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            ` : `<img src="/icons/pdf-icon.png" class="card-img-top" alt="${resource.name}">`}
+            <div class="card-body">
+              <h5 class="card-title">${resource.name}</h5>
+              <p class="card-text"><strong>Type:</strong> ${resource.fileType}</p>
+              <p class="card-text"><strong>Downloads:</strong> ${resource.downloads}</p>
+              <p class="card-text"><strong>Views:</strong> ${resource.views}</p>
+            </div>
+          </div>
+        </div>
+      `;
+            trendingList.innerHTML += card;
+          });
+        } catch (err) {
+          console.error('Error fetching trending resources:', err);
+        }
+      }
+
+
+      document.addEventListener('DOMContentLoaded', () => {
+        fetchResources();
+        fetchTrendingResources(); // Load trending resources on page load
+      });
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

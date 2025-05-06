@@ -1,0 +1,975 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Distributes space evenly */
+    align-items: center; /* Vertically centers logo and icons */
+    background: linear-gradient(to right, #000000, #363636);
+    padding: 1rem 2rem;
+}
+
+#logout-btn {
+    color: black;
+}
+
+.logo {
+    color: rgb(122, 236, 225);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    margin-left: 5rem; /* Remove or adjust as needed */
+}
+
+
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    transform: translateY(0.5rem);
+    margin-right: 5rem;
+
+}
+
+.navbar li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    transition: color 0.7s ease, transform 0.7s ease;
+    border-radius: 8px;
+}
+
+.navbar li a:hover {
+    color: rgb(2, 209, 189);
+    transform: scale(1.3);
+    transition: 0.7s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Add shadow */
+}
+
+.navbar li:hover ~ li a {
+    transform: translateX(20px); /* Move other icons to the right */
+}
+
+
+.navbar li a:not(:hover) {
+    transition: transform 0.7s ease;
+}
+
+.navbar i {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}  
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+h1 {
+    color: #2d2d2d;
+    font-size: 2.5em;
+}
+
+h2 {
+    color: #4c4c4c;
+    font-size: 1.8em;
+    margin-bottom: 15px;
+}
+
+.form-section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+form input, form textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+form input[type="number"] {
+    max-width: 150px;
+}
+
+form button {
+    padding: 12px 20px;
+    background-color: #5cb85c;
+    color: white;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #4cae4c;
+}
+
+.posts-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.post-list {
+    list-style-type: none; 
+    padding-left: 0;       
+}
+
+.post-list li {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.post-list li strong {
+    display: block;
+    font-size: 1.3em;
+    color: #2a2a2a;
+}
+
+.post-list li p {
+    font-size: 1em;
+    color: #666;
+}
+
+.post-list li:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    form input, form textarea {
+        font-size: 1em;
+    }
+
+    form button {
+        font-size: 1em;
+    }
+}
+
+.upvote-btn, .downvote-btn {
+    background-color: transparent;
+    border: none;
+    color: #007bff;  /* Blue color for upvote and downvote arrows */
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+.upvote-btn:hover, .downvote-btn:hover {
+    color: #0056b3; /* Darker blue on hover */
+}
+
+.upvote-btn i, .downvote-btn i {
+    transform: scale(1.2);  /* Scale up the icons */
+}
+
+/* Floating button styles */
+#createPostBtn {
+    position: fixed;
+    bottom: 20px;  /* Position the button 20px from the bottom */
+    right: 20px;   /* Position the button 20px from the right */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;  /* Ensures the button is above all other content */
+}
+
+#createPostBtn i {
+    color: white;
+}
+
+/* Optional: Make the button look more prominent on hover */
+#createPostBtn:hover {
+    background-color: #0056b3;
+    cursor: pointer;
+}
+.modal {
+    display: none;
+    position: fixed;
+    bottom: -100%; /* Initially hidden offscreen */
+    transition: bottom 0.3s ease-out; /* Smooth transition for the modal's slide-up effect */
+}
+
+/* Modal showing */
+.modal.show {
+    display: block;
+    bottom: 20px; /* Modal appears 20px from the bottom */
+}
+
+/* Optional: Customize modal content to look better when sliding up */
+.modal-content {
+    animation: slide-up 0.3s ease-out;
+}
+
+/* Optional: Add keyframes if you want a more complex sliding effect */
+@keyframes slide-up {
+    0% {
+        transform: translateY(100%); /* Start off-screen */
+    }
+    100% {
+        transform: translateY(0); /* Slide into place */
+    }
+}
+
+.modal-dialog {
+    max-width: 80%;  /* Set width to 80% of the screen */
+    height: 80%;     /* Set height to 80% of the screen */
+    margin: 1.75rem auto;  /* Center modal */
+}
+
+.modal-content {
+    height: 80%;  /* Make the content fill the modal */
+}
+
+#postContent {
+    height: 250px;  /* Set the height of the textarea */
+}
+
+/* Filter dropdown styling */
+#filterDropdown {
+    margin-top: 1em;
+    margin-left: 3em;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    color: #333;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Focus effect */
+#filterDropdown:focus {
+    border-color: #007bff;
+    outline: none;
+    background-color: #fff;
+}
+
+/* Option styling */
+#filterDropdown option {
+    padding: 10px;
+}
+
+.forum-item {
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.forum-item:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+}
+
+/* Overlay styles */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Darkens the background */
+    display: none; /* Initially hidden */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure it's on top */
+}
+
+.overlay-content h2 {
+    color: white;
+    font-size: 3rem;
+    text-align: center;
+}
+
+/* Dark Mode Styles */
+body.dark-mode{
+    background-color: #1e1e1e;
+    color: rgb(255, 255, 255);
+  }
+
+body.dark-mode #filter,
+body.dark-mode .card-body{
+    background-color: #1e1e1e;
+}
+
+body.dark-mode .card-header,
+body.dark-mode .card-footer{
+    background-color: #1e1e1e;
+    border: 1px solid white
+}
+
+body.dark-mode 
+
+body.dark-mode .navbar li a:hover {
+    color: rgb(2, 209, 189);  /* Retain the hover color */
+}
+
+/* Form Styling in Dark Mode */
+body.dark-mode .form-section, 
+body.dark-mode .posts-section,
+body.dark-mode .post-list li {
+    background-color: #333;
+    color: #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode form input, 
+body.dark-mode form textarea, 
+body.dark-mode #filterDropdown {
+    background-color: #333;
+    border: 1px solid #ffffff;
+    color: #e0e0e0;
+}
+
+body.dark-mode #filterDropdown {
+    background-color: #333;
+    border: 1px solid #ffffff;
+    color: #e0e0e0;
+}
+
+body.dark-mode form input[type="number"],
+body.dark-mode form button {
+    background-color: #444;
+    border: 1px solid #666;
+}
+
+body.dark-mode form button:hover {
+    background-color: #666;
+}
+
+/* Posts Section in Dark Mode */
+body.dark-mode .post-list li {
+    background-color: #444;
+    color: #e0e0e0;
+}
+
+body.dark-mode .post-list li strong{
+    color: #ffffff;
+}
+
+body.dark-mode .post-list li p {
+    color: #b0b0b0;
+}
+
+/* Floating Button in Dark Mode */
+body.dark-mode #createPostBtn {
+    background-color: #007bff;
+}
+
+body.dark-mode #createPostBtn:hover {
+    background-color: #0056b3;
+}
+
+/* Modal Styling in Dark Mode */
+body.dark-mode .modal {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+body.dark-mode .modal-content {
+    background-color: #444;
+    color: #e0e0e0;
+}
+
+body.dark-mode .modal-content input,
+body.dark-mode .modal-content textarea {
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+/* Filter Dropdown in Dark Mode */
+body.dark-mode #filterDropdown {
+    background-color: #333;
+    border: 1px solid #ffffff;
+}
+
+body.dark-mode #filterDropdown option {
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+body.dark-mode #filterDropdown option:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Cards and Forum Items in Dark Mode */
+body.dark-mode .forum-item {
+    background: #444;
+    color: #e0e0e0;
+}
+
+body.dark-mode .forum-item:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+}
+
+/* Dark Mode Button Styling */
+body.dark-mode #darkModeToggle {
+    background-color: black;
+    color: white;
+}
+
+body.dark-mode #darkModeToggle:hover {
+    background-color: #0056b3;
+}
+
+/* Overlay Styling in Dark Mode */
+body.dark-mode .overlay {
+    background-color: #1e1e1e;
+}
+
+body.dark-mode .overlay-content h2 {
+    color: white;
+    font-size: 3rem;
+    text-align: center;
+}
+
+/* Additional Elements for Dark Mode (to enhance visibility and contrast) */
+body.dark-mode .dark-mode-card {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border: 1px solid #ffffff;
+}
+
+body.dark-mode .dark-mode-card .card-body,
+body.dark-mode .dark-mode-card .card-footer {
+    background-color: #1e1e1e;
+}
+
+body.dark-mode .dark-mode-card .upvote-btn,
+body.dark-mode .dark-mode-card .downvote-btn {
+    color: #e0e0e0;
+}
+
+body.dark-mode .dark-mode-card .upvote-btn:hover,
+body.dark-mode .dark-mode-card .downvote-btn:hover {
+    color: #007bff;
+}
+
+body.dark-mode button {
+    color: white;
+}
+
+/* Dark Mode Button */
+#darkModeToggle {
+    width: 60px;               /* Button size */
+    height: 60px;              /* Button size */
+    border-radius: 50%;        /* Make it circular */
+    background-color: #444;    /* Dark background */
+    color: white;              /* White text (icons) */
+    font-size: 24px;           /* Icon size */
+    display: flex;
+    align-items: center;       /* Vertically center the icon */
+    justify-content: flex-end; /* Align the icon to the right */
+    padding-right: 10px;       /* Add some space to the right of the icon */
+    border: none;              /* Remove border */
+    cursor: pointer;          /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    position: fixed;           /* Fixed position */
+    top: 20px;                 /* Distance from the top of the page */
+    right: 20px;               /* Distance from the right side of the page */
+    z-index: 9999;             /* Ensure the button stays on top */
+}
+
+#darkModeToggle:hover {
+    background-color: #555;    /* Lighter background on hover */
+}
+
+/* Ensure the icon inside is properly sized */
+#darkModeIcon {
+    font-size: 30px;           /* Adjust icon size */
+}
+
+
+#darkModeToggle:hover {
+    background-color: #555;    /* Slightly lighter background on hover */
+}
+
+/* Ensure the icon inside is properly aligned */
+#darkModeIcon {
+    font-size: 30px;           /* Adjust icon size to make it bigger */
+}
+
+/* Overlay styles */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.overlay-content h2 {
+    color: white;
+    font-size: 3rem;
+    text-align: center;
+}
+
+/*editable fields css*/
+input[type="text"], textarea {
+    color: #333; /* Dark text color */
+    background-color: #fff; /* Light background */
+}
+
+body.dark-mode input[type="text"], 
+body.dark-mode textarea {
+    color: #fff; /* Light text color */
+    background-color: #333; /* Dark background */
+}
+
+body.dark-mode input[type="text"]:focus, 
+body.dark-mode textarea:focus {
+    border-color: #fff; /* Light border on focus */
+    background-color: #444; /* Slightly darker background */
+}
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.comment-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+.comment-content .text {
+    flex-grow: 1;
+}
+
+.comment-content .delete-icon {
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.reply-btn {
+    display: inline-block;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.reply-form {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+}
+
+.replies {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.replies .list-group-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    margin-left: 6em; /* Indent replies */
+    position: relative;
+}
+
+.replies .list-group-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -20px;
+    bottom: 0; /* Extend the line through the entire height */
+    width: 2px;
+    background-color: #ddd;
+}
+
+.replies .list-group-item::after {
+    content: '';
+    position: absolute;
+    top: 50%; /* Adjust this value to match the end of the vertical line */
+    left: -20px;
+    height: 2px;
+    width: 20px; /* Adjust this value to control the horizontal line length */
+    background-color: #ddd;
+}
+
+.replies .list-group-item + .list-group-item::before {
+    top: -50%; /* Extend the line upwards to connect with the previous reply */
+}
+
+.replies .list-group-item:last-child::before {
+    bottom: 50%; /* Stop the vertical line at the middle of the last reply */
+}
+
+.replies .list-group-item:last-child::after {
+    top: 50%; /* Ensure the horizontal line starts from the middle */
+    left: -20px;
+    height: 2px;
+    width: 20px; /* Adjust this value to control the horizontal line length */
+    background-color: #ddd;
+}
+
+/* Dark Mode Styles for Replies List-Group */
+body.dark-mode .replies .list-group-item {
+    background-color: #333;
+    border: 1px solid #555;
+    color: #e0e0e0;
+}
+
+body.dark-mode .replies .list-group-item::before,
+body.dark-mode .replies .list-group-item::after {
+    background-color: #e0e0e0;
+}
+
+body.dark-mode .replies .list-group-item:last-child::before {
+    bottom: 50%; /* Stop the vertical line at the middle of the last reply */
+}
+
+body.dark-mode .replies .list-group-item:last-child::after {
+    top: 50%; /* Ensure the horizontal line starts from the middle */
+    left: -20px;
+    height: 2px;
+    width: 20px; /* Adjust this value to control the horizontal line length */
+    background-color: #e0e0e0;
+}
+
+/* Dark Mode Styles for Comment Content */
+body.dark-mode .comment-content {
+    background-color: #333;
+    border: 1px solid #e0e0e0;
+    color: #e0e0e0;
+}
+
+body.dark-mode .comment-content .text {
+    color: #e0e0e0;
+}
+
+body.dark-mode .comment-content .delete-icon {
+    color: #e0e0e0;
+}
+
+/* Dark Mode Styles for Comments List */
+body.dark-mode .comments-list {
+    background-color: #333;
+    border: 1px solid #e0e0e0;
+    color: #e0e0e0;
+}
+
+/* Ensure that the list items within the comments list are also styled */
+body.dark-mode .comments-list .list-group-item {
+    background-color: #333;
+    border: 1px solid #e0e0e0;
+    color: #e0e0e0;
+}
+
+body.dark-mode .form-control {
+    background-color: #444;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+/* Remove blue border when clicking the hide comment button */
+button:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Additional styles for the hide comment button */
+button.hide-comment {
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+body.dark-mode .comment-content .delete-icon {
+    margin-right: 1em; /* Move the trash can icon to the right */
+}
+
+.delete-icon {
+    margin-right: 1em; /* Move the trash can icon to the right */
+}
+
+button.show-comments-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.highlight {
+    background-color: yellow;
+    color: black;
+  }
+
+  .notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.notification-item.read {
+    opacity: 0.5;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal.visible {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.close-button:hover {
+    color: #333;
+}
+
+/* Bell Container */
+#notification-bell-container {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    z-index: 1000;
+}
+
+/* Bell Button */
+.notification-bell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    padding: 0;
+}
+
+.notification-bell:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.05);
+}
+
+.notification-bell svg {
+    width: 20px;
+    height: 20px;
+    color: #333;
+}
+
+/* Notification Count Badge */
+.notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ef4444;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+/* Individual Notifications */
+.notification {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+#notification-bell-container {
+    position: fixed;
+    right: 1.2em;
+    top: 7em;    /* This line controls the vertical position */
+    z-index: 1000;
+}
+
+.notification:hover {
+    background-color: #f9fafb;
+}
+
+.notification:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.notification.read .notification-content {
+    color: #9ca3af;
+}
+
+/* Notification Actions */
+.notification-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn.read {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.btn.read:hover {
+    background-color: #2563eb;
+}
+
+.btn.delete {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btn.delete:hover {
+    background-color: #dc2626;
+}
+
+.back-btn {
+    background-color: #007bff; /* Primary Blue */
+    color: white;
+    font-size: 16px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-flex; /* Prevent stretching */
+    align-items: center;
+    gap: 8px;
+    width: auto; /* Ensure it doesn't stretch */
+    white-space: nowrap; /* Prevents text from breaking */
+    text-decoration: none; /* Removes underline if using <a> */
+    font-weight: bold;
+    position: absolute; /* Keep only one positioning type */
+    top: 6em;
+    left: 1em;
+}
+
+/* Hover Effect */
+.back-btn:hover {
+    background-color: #0056b3; /* Darker Blue */
+    transform: scale(1.05);
+}
+
+/* Active (Click) Effect */
+.back-btn:active {
+    transform: scale(0.95);
+}

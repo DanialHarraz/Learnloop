@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnLoop - CI/CD Project</title>
+    <link rel="stylesheet" href="./forum.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700|Montserrat:300" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="../security.js"></script>
+    <script src="../navbar.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">LearnLoop</div>
+        <ul id="navbar">
+            <li><a href="../index.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+            <li><a href="../group/group.html"><i class="fas fa-users"></i><span>Groups</span></a></li>
+            <li><a href="../individual/indi.html"><i class="fas fa-calendar-alt"></i><span>Individual</span></a></li>
+            <li><a href="../resources/resources.html"><i class="fas fa-book"></i><span>Resources</span></a></li>
+            <li><a href="../forum/forumMain.html"><i class="fas fa-podcast"></i><span>Forum</span></a></li>
+            <li><a href="#profile"><i class="fas fa-user"></i><span>Profile</span></a></li>
+        </ul>
+    </nav>
+
+    <a href="../forum/forumMain.html" class="back-btn">Back</a>
+
+    
+
+    <div id="notification-bell-container"></div>
+
+    <!-- Modal template -->
+    <div id="notification-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Notifications</h2>
+                <button id="close-modal" class="close-button">&times;</button>
+            </div>
+            <div id="notification-container"></div>
+        </div>
+    </div>
+
+
+    <!-- Floating Create Post Button -->
+    <button id="createPostBtn" class="btn btn-primary btn-floating">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    
+    
+    
+    <!-- Create Post Modal -->
+    <div class="modal fade" id="createPostModal" tabindex="-1" aria-labelledby="createPostModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createPostModalLabel">New Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createPostForm">
+                        <div class="mb-3">
+                            <input type="text" id="postTitle" class="form-control" placeholder="Title" required />
+                        </div>
+                        <div class="mb-3">
+                            <textarea id="postContent" class="form-control" placeholder="What's happening?" rows="4" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="createPostForm" class="btn btn-primary">Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="darkModeToggle">
+        <span id="darkModeIcon">🌙</span>
+    </button>
+
+    <div class="container mt-4">
+        <!-- List of Posts -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>All Posts</h3>
+            </div>
+            <input type="text" id="searchBar" placeholder="Search posts..." class="form-control mb-3">
+    
+            <div id="filter">
+                <select id="filterDropdown" onchange="applyFilter()">
+                    <option value="newest">Newest Posts</option>
+                    <option value="oldest">Oldest Posts</option>
+                    <option value="highestVotes">Highest Votes</option>
+                    <option value="lowestVotes">Lowest Votes</option>
+                </select>
+            </div>
+            
+            <div class="card-body">
+                <ul id="postList" class="list-group">
+                    {{#each post.comments}}
+                    <li class="list-group-item" id="comment-{{this.id}}">
+                        <div class="comment-content">
+                            <div class="text">
+                                <strong>{{this.user.name}}</strong> - {{this.createdAt}}
+                                <p>{{this.content}}</p>
+                            </div>
+                            <i class="fas fa-trash-alt text-danger delete-icon" data-comment-id="{{this.id}}" title="Delete"></i>
+                        </div>
+                        <button class="btn btn-link reply-btn" data-comment-id="{{this.id}}">Reply</button>
+                        <form class="reply-form" id="reply-form-{{this.id}}" style="display: none;">
+                            <textarea class="form-control reply-content" rows="2" placeholder="Write a reply"></textarea>
+                            <button type="submit" class="btn btn-primary mt-2">Reply</button>
+                        </form>
+                        <ul class="replies list-group">
+                            {{#each this.replies}}
+                            <li class="list-group-item" id="comment-{{this.id}}">
+                                <div class="comment-content">
+                                    <div class="text">
+                                        <strong>{{this.user.name}}</strong> - {{this.createdAt}}
+                                        <p>{{this.content}}</p>
+                                    </div>
+                                    <i class="fas fa-trash-alt text-danger delete-icon" data-comment-id="{{this.id}}" title="Delete"></i>
+                                </div>
+                                <button class="btn btn-link reply-btn" data-comment-id="{{this.id}}">Reply</button>
+                                <form class="reply-form" id="reply-form-{{this.id}}" style="display: none;">
+                                    <textarea class="form-control reply-content" rows="2" placeholder="Write a reply"></textarea>
+                                    <button type="submit" class="btn btn-primary mt-2">Reply</button>
+                                </form>
+                                <ul class="replies list-group">
+                                    {{#each this.replies}}
+                                    <li class="list-group-item" id="comment-{{this.id}}">
+                                        <div class="comment-content">
+                                            <div class="text">
+                                                <strong>{{this.user.name}}</strong> - {{this.createdAt}}
+                                                <p>{{this.content}}</p>
+                                            </div>
+                                            <i class="fas fa-trash-alt text-danger delete-icon" data-comment-id="{{this.id}}" title="Delete"></i>
+                                        </div>
+                                        <button class="btn btn-link reply-btn" data-comment-id="{{this.id}}">Reply</button>
+                                        <form class="reply-form" id="reply-form-{{this.id}}" style="display: none;">
+                                            <textarea class="form-control reply-content" rows="2" placeholder="Write a reply"></textarea>
+                                            <button type="submit" class="btn btn-primary mt-2">Reply</button>
+                                        </form>
+                                    </li>
+                                    {{/each}}
+                                </ul>
+                            </li>
+                            {{/each}}
+                        </ul>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Post Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Update Post</h3>
+        </div>
+        <div class="card-body">
+            <form id="updatePostForm">
+                <div class="mb-3">
+                    <label for="updatePostTitle" class="form-label">New Post Title</label>
+                    <input type="text" id="updatePostTitle" class="form-control" placeholder="New Post Title" required />
+                </div>
+                <div class="mb-3">
+                    <label for="updatePostContent" class="form-label">New Post Content</label>
+                    <textarea id="updatePostContent" class="form-control" placeholder="New Post Content" rows="4" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="updatePostId" class="form-label">Post ID</label>
+                    <input type="number" id="updatePostId" class="form-control" placeholder="Post ID" required />
+                </div>
+                <button type="submit" class="btn btn-warning">Update Post</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Post Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Delete Post</h3>
+        </div>
+        <div class="card-body">
+            <form id="deletePostForm">
+                <div class="mb-3">
+                    <label for="deletePostId" class="form-label">Post ID</label>
+                    <input type="number" id="deletePostId" class="form-control" placeholder="Post ID" required />
+                </div>
+                <button type="submit" class="btn btn-danger">Delete Post</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybF5kzXfhvJHe6Dqg8zS5gGmAzVNN7h5y8fXfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0XpO9OaRkzGkmXrY0gQpbi64K5ddUbH1+n4He9/jxjw64qgA" crossorigin="anonymous"></script>
+    <script src="./js/forum.js"></script>
+</body>
+</html>

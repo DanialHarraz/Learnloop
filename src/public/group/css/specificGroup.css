@@ -1,0 +1,52 @@
+/* Banner styling */
+.group-banner {
+    background-color: #4a90e2;
+    padding: 50px 0;
+}
+
+/* Tabs styling */
+.nav-tabs .nav-link {
+    color: #333;
+    font-weight: bold;
+}
+
+.nav-tabs .nav-link.active {
+    color: #4a90e2;
+    border-color: #4a90e2;
+}
+
+.tab-content {
+    padding-top: 20px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.member-name {
+    font-weight: bold;
+}
+
+.member-role {
+    font-style: italic;
+    color: #666;
+}
+
+.list-group-item {
+    display: flex;
+    align-items: center;
+}
+
+
+.make-moderator-btn {
+    margin-left: 10px;
+}
+
+.member-role {
+    font-weight: bold;
+    margin-left: 10px;
+    color: #007bff;
+}

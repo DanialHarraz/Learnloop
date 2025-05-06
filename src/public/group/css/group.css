@@ -1,0 +1,130 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Distributes space evenly */
+    align-items: center; /* Vertically centers logo and icons */
+    background: linear-gradient(to right, #000000, #363636);
+    padding: 1rem 2rem;
+}
+
+.logo {
+    color: rgb(122, 236, 225);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    margin-left: 5rem; /* Remove or adjust as needed */
+}
+
+
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    transform: translateY(0.5rem);
+    margin-right: 5rem;
+
+}
+
+.navbar li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    transition: color 0.7s ease, transform 0.7s ease;
+    border-radius: 8px;
+}
+
+.navbar li a:hover {
+    color: rgb(2, 209, 189);
+    transform: scale(1.3);
+    transition: 0.7s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Add shadow */
+}
+
+.navbar li:hover ~ li a {
+    transform: translateX(20px); /* Move other icons to the right */
+}
+
+
+.navbar li a:not(:hover) {
+    transition: transform 0.7s ease;
+}
+
+.navbar i {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+/* Body */
+.container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.group-list {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Cards */
+.card {
+    transition: transform 0.2s;
+    height: 100%;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card-title {
+    font-size: 1.2rem;
+}
+
+.card-text {
+    font-size: 0.9rem;
+}
+
+/* responsive css*/
+@media only screen and (min-width:768px) and (max-width:991px){
+    .carousel-caption{
+        bottom: 370px;
+    }
+    .carousel-caption p{
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width:767px){
+    .navbar-nav{
+        text-align: center;
+    }
+    .carousel-caption{
+        bottom: 125px;           
+    }
+    .carousel-caption h5{
+        font-size: 17px;
+    }
+    .carousel-caption a{
+        padding: 10px 15px; 
+    }
+    .carousel-caption p{
+        width: 100%;
+        line-height: 1.6;
+        font-size: 12px;    
+    }   
+
+}
